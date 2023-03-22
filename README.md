@@ -18,3 +18,7 @@ open localhost:3000.
 
 There is a seed_app.html which contains a starting seed for a web5 app. 
 This is then modified iteratively by ChatGPT into the app you want.
+
+## Example
+
+![cheese](https://user-images.githubusercontent.com/14976/227026200-7d0f5afe-ab13-42ae-90bb-aa115e3c6c51.png)
