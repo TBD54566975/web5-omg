@@ -23,7 +23,7 @@ app.get("/app", (req, res) => {
 app.post('/prompt', async (req, res) => {
   // read the body of the request - which is json
   body = req.body;
-  const result = await processOpenai(body.prompt, body.context_html);
+  const result = await processOpenai(body.prompt, body.context_html);  
   res.send(result);
 });
 
