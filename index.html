@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>HTML Editor</title>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        margin: 0;
+      }
+      
+      .main-wrapper {
+        flex: 1;
+        display: flex;
+        overflow: hidden;
+      }
+      
+      .preview-wrapper {
+        flex: 1;
+        padding: 20px;
+        box-sizing: border-box;
+        overflow: auto;
+      }
+      
+      .preview {
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+      
+      .output-wrapper {
+        flex: 1;
+        padding: 20px;
+        box-sizing: border-box;
+        overflow: auto;
+      }
+      
+      .output {
+        width: 100%;
+        height: 100%;
+        border: none;
+        resize: none;
+        font-family: monospace;
+        font-size: 16px;
+      }
+      
+      .editor-wrapper {
+        height: 200px;
+        border-top: 1px solid #ccc;
+        padding: 20px;
+        box-sizing: border-box;
+        overflow: auto;
+      }
+      
+      .editor {
+        width: 100%;
+        height: 100%;
+        border: none;
+        resize: none;
+        font-family: monospace;
+        font-size: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main-wrapper">
+      <div class="preview-wrapper">
+        <iframe class="preview"></iframe>
+      </div>
+      <div class="output-wrapper">
+        <textarea class="output"></textarea>
+      </div>
+    </div>
+    <div class="editor-wrapper">
+      <textarea class="editor" placeholder="Add your instructions of how to modify the app here. Top right is editable source. Top left is your web5 app"></textarea>
+    </div>
+    <script>
+      const editor = document.querySelector('.editor');
+      const preview = document.querySelector('.preview');
+      const output = document.querySelector('.output');
+
+      // add an event listener on editor for when the user presses enter
+      editor.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          // prevent the default behavior of the enter key
+          e.preventDefault();
+
+          // show that the browser is busy
+          editor.style.cursor = 'wait';
+
+          fetch('/prompt', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              prompt: editor.value,
+              context_html: output.value
+            })
+          }).then(response => response.text()).then(text => {
+          output.value = text;
+          preview.contentDocument.open();
+          preview.contentDocument.write(output.value);
+          preview.contentDocument.close();     
+          // make cursor not busy
+          editor.style.cursor = 'auto';     
+        });
+
+        }});
+
+
+      output.addEventListener('input', () => {
+        preview.contentDocument.open();
+        preview.contentDocument.write(output.value);
+        preview.contentDocument.close();        
+      });
+
+      output.value = "<b>yeah";
+
+      // load the initial value from /app
+      fetch('/app')
+        .then(response => response.text())
+        .then(text => {
+          output.value = text;
+          preview.contentDocument.open();
+          preview.contentDocument.write(output.value);
+          preview.contentDocument.close();        
+        });  
+
+
+    </script>
+  </body>
+</html>
