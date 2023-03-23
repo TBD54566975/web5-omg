@@ -1,13 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OMG Web5.js App</title>
     <style>
-      /* preserve styles from previous example */
       body {
         font-family: 'Press Start 2P', cursive;
         background-color: yellow;
@@ -53,7 +50,7 @@
           'id': 'dwn',
           'type': 'DecentralizedWebNode',
           'serviceEndpoint': {
-            'nodes': ['https://dwn-usa-1.ue8cktdq71va0.us-east-2.cs.amazonlightsail.com/']
+            'nodes': []
           }
         }
       ]
@@ -68,7 +65,7 @@
       keys: myDid.keys[0].keypair
     });
 
-    /* boilerplace end */
+    /* boilerplate end */
 
     /* Below are examples of operations with the DWN: writing and reading records. */
 

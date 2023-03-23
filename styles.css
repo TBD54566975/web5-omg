@@ -1,0 +1,24 @@
+body {
+  font-family: 'Press Start 2P', cursive;
+  background-color: yellow;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1rem;
+}
+label {
+  font-size: 1.2rem;
+}
+input {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+button {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1.2rem;
+}
