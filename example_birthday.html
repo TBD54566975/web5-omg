@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web5 Data Storage App</title>
+    <link href="https://cdn.jsdelivr.net/gh/TBD54566975/web5-omg@main/styles.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+    <h>{TBD logo}</h>
+    <form>
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name"><br>
+        <label for="birthday">Birthday:</label><br>
+        <input type="date" id="birthday" name="birthday"><br>
+        <label for="color">Favourite Color:</label><br>
+        <input type="color" id="color" name="color"><br><br>
+        <input type="button" value="Submit" onclick="storeData()">
+    </form>
+    <script type="module">
+        import { Web5, DWebNodeSDK } from 'https://cdn.jsdelivr.net/npm/@tbd54566975/web5@v0.2.0-unstable.03d4273-2023.3.17-04-09-58/dist/browser.mjs';
+
+        /* boilerplate start - required for every web5 app */
+
+        let userDid;    
+        if (localStorage.getItem('userDid')) {
+            userDid = JSON.parse(localStorage.getItem('userDid'));
+            console.log("Loading previous DID from localStorage");
+        } else {
+          console.log("Creating new DID and storing in local storage");
+            userDid = await Web5.did.create('ion', {
+                services: [{
+                    'id': 'dwn',
+                    'type': 'DecentralizedWebNode',
+                    'serviceEndpoint': {
+                        'nodes': []
+                    }
+                }]
+            });        
+            localStorage.setItem('userDid', JSON.stringify(userDid));
+        }
+
+        // Register the DID as one which is running in browser and for which keys are available to sign messages.
+        Web5.did.register({
+          connected: true,
+          did: userDid.id,
+          endpoint: 'app://dwn',
+          keys: userDid.keys[0].keypair
+        });
+
+        // Convenience functions to decode data returned by queries
+        function base64UrlToObject(encodedData) {
+          return DWebNodeSDK.Encoder.base64UrlToObject(encodedData);
+        }
+        
+        /* boilerplate end */
+
+        /* Function to store the data in the decentralized web */
+        async function storeData() {
+          const name = document.getElementById("name").value;
+          const birthday = document.getElementById("birthday").value;
+          const color = document.getElementById("color").value;
+
+          // create a JSON object with the data
+          const dataObject = {
+            "name": name,
+            "birthday": birthday,
+            "color": color
+          }
+
+          // write the data object to the decentralized web
+          const response = await Web5.records.write(userDid.id, {
+            author: userDid.id,
+            data: dataObject,
+            message: {
+              schema: 'user/info',
+              dataFormat: 'application/json'
+            }
+          });
+
+          // log the response status and the data object that was stored
+          console.log('WRITE RESPONSE:', response.status);
+          console.log('STORED DATA:', dataObject);
+
+          // clear the form
+          document.getElementById("name").value = "";
+          document.getElementById("birthday").value = "";
+          document.getElementById("color").value = "";
+        }
+
+    </script>
+</body>
+</html>

@@ -1,36 +1,36 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OMG Web5.js App</title>
     <link href="https://cdn.jsdelivr.net/gh/TBD54566975/web5-omg@main/styles.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   </head>
-
 <body>
-
   <h>{TBD logo}</h>
-
   <script type="module">
     import { Web5, DWebNodeSDK } from 'https://cdn.jsdelivr.net/npm/@tbd54566975/web5@v0.2.0-unstable.03d4273-2023.3.17-04-09-58/dist/browser.mjs';
 
-
     /* boilerplate start - required for every web5 app */
+    
+    let myDid;    
+    if (localStorage.getItem('myDid')) {
+        myDid = JSON.parse(localStorage.getItem('myDid'));
+        console.log("Loading previous did from localStorage");
+    } else {
+      console.log("Creating new did and storing in local storage");
+        myDid = await Web5.did.create('ion', {
+            services: [{
+                'id': 'dwn',
+                'type': 'DecentralizedWebNode',
+                'serviceEndpoint': {
+                    'nodes': []
+                }
+            }]
+        });        
+        localStorage.setItem('myDid', JSON.stringify(myDid));
+    }
 
-    // Create a new ION DID and public-private key pair. This always has to be done once. 
-    const myDid = await Web5.did.create('ion', {
-      services: [
-        {
-          'id': 'dwn',
-          'type': 'DecentralizedWebNode',
-          'serviceEndpoint': {
-            'nodes': []
-          }
-        }
-      ]
-    });
-    console.log('DID:', myDid);
 
     // Register the DID as one which is running in browser and for which keys are available to sign messages.
     Web5.did.register({
@@ -39,6 +39,14 @@
       endpoint: 'app://dwn',
       keys: myDid.keys[0].keypair
     });
+
+    // Convenience functions to decode data returned by queries
+    function base64UrlToString(encodedData) {
+      return DWebNodeSDK.Encoder.bytesToString(DWebNodeSDK.Encoder.base64UrlToBytes(encodedData));
+    }
+    function base64UrlToObject(encodedData) {
+      return DWebNodeSDK.Encoder.base64UrlToObject(encodedData);
+    }
 
     /* boilerplate end */
 
@@ -89,14 +97,6 @@
     });
     console.log('QUERY RESPONSE:', response.entries[0]);
     console.log('RESPONSE DATA:', base64UrlToObject(response.entries[0].encodedData));
-
-    // Convenience functions to decode data returned by queries
-    function base64UrlToString(encodedData) {
-      return DWebNodeSDK.Encoder.bytesToString(DWebNodeSDK.Encoder.base64UrlToBytes(encodedData));
-    }
-    function base64UrlToObject(encodedData) {
-      return DWebNodeSDK.Encoder.base64UrlToObject(encodedData);
-    }
 
   </script>
 </body>
