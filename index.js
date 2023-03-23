@@ -42,20 +42,27 @@ async function processOpenai(prompt, context_html) {
   const appjs = fs.readFileSync('seed_app.html', 'utf8');
 
   const openai = new OpenAIApi(configuration);  
-  const completion = await openai.createChatCompletion({
-    model: "gpt-3.5-turbo",
-    messages: [
-              {role: "system", "content": "You are a helpful assistant that modifies the html and web5 source code as directed."},
-              {role: "user", content: "web5 is a new decentralised framework for building web apps. Take a code snippet and modify it to add a new feature, returning only the code."},
-              {role: "assistant", content: "ok. I will modify the code as directed and only return the code. What does web5 look like, can you provide me a minimal example?"},
-              {role: "user", content: "Following is a minimal example of a web5 app that show the the style of the api and necessary boiler place in the contest of a single html page:\n" + appjs},
-              {role: "assistant", content: "ok got it. Now you can show me the single html page app in web5 you want me to modify."},
-              {role: "user", content: context_html},
-              {role: "assistant", content: "ok describe what you want me to do with this code."},
-              {role: "user", content: prompt},          
+  
+  
+    const res = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      stream: true, 
+      messages: [
+                {role: "system", "content": "You are a helpful assistant that modifies the html and web5 source code as directed."},
+                {role: "user", content: "web5 is a new decentralised framework for building web apps. Take a code snippet and modify it to add a new feature, returning only the code."},
+                {role: "assistant", content: "ok. I will modify the code as directed and only return the code. What does web5 look like, can you provide me a minimal example?"},
+                {role: "user", content: "Following is a minimal example of a web5 app that show the the style of the api and necessary boiler place in the contest of a single html page:\n" + appjs},
+                {role: "assistant", content: "ok got it. Now you can show me the single html page app in web5 you want me to modify."},
+                {role: "user", content: context_html},
+                {role: "assistant", content: "ok describe what you want me to do with this code."},
+                {role: "user", content: prompt},          
 
-              ],
-  });
+                ],
+    }, {responseType: 'stream'});
+
+    res.data.on('data', data => console.log(data.toString()));
+
+  /*
   console.log(completion.data.choices[0].message);
   
     
@@ -66,7 +73,10 @@ async function processOpenai(prompt, context_html) {
   const end = result.indexOf("</html>");
   const html = result.substring(start, end + "</html>".length);
   console.log(html);
+  
   return html;
+  */
+  return "mid";
   
   
 }
