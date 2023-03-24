@@ -9,17 +9,20 @@
 <body>
   <h>{TBD logo}</h>
   <script type="module">
-    import { Web5, DWebNodeSDK } from 'https://cdn.jsdelivr.net/npm/@tbd54566975/web5@v0.2.0-unstable.03d4273-2023.3.17-04-09-58/dist/browser.mjs';
 
-    /* boilerplate start - required for every web5 app */
-    
+    import { Web5 } from 'https://cdn.jsdelivr.net/npm/@tbd54566975/web5@0.3.1-unstable.e2dfe57-2023.3.23-19-07-37/dist/browser.mjs';
+
+    const web5 = new Web5();
+
+
+    /* boilerplate start - required for every web5 app */    
     let myDid;    
     if (localStorage.getItem('myDid')) {
         myDid = JSON.parse(localStorage.getItem('myDid'));
         console.log("Loading previous did from localStorage");
     } else {
       console.log("Creating new did and storing in local storage");
-        myDid = await Web5.did.create('ion', {
+        myDid = await web5.did.create('ion', {
             services: [{
                 'id': 'dwn',
                 'type': 'DecentralizedWebNode',
@@ -31,29 +34,25 @@
         localStorage.setItem('myDid', JSON.stringify(myDid));
     }
 
-
-    // Register the DID as one which is running in browser and for which keys are available to sign messages.
-    Web5.did.register({
+    web5.did.register({
       connected: true,
       did: myDid.id,
       endpoint: 'app://dwn',
       keys: myDid.keys[0].keypair
     });
 
-    // Convenience functions to decode data returned by queries
     function base64UrlToString(encodedData) {
-      return DWebNodeSDK.Encoder.bytesToString(DWebNodeSDK.Encoder.base64UrlToBytes(encodedData));
+      return web5.dwn.SDK.Encoder.bytesToString(web5.dwn.SDK.Encoder.base64UrlToBytes(encodedData));
     }
     function base64UrlToObject(encodedData) {
-      return DWebNodeSDK.Encoder.base64UrlToObject(encodedData);
+      return web5.dwn.SDK.Encoder.base64UrlToObject(encodedData);
     }
-
     /* boilerplate end */
 
     /* Below are examples of operations with the DWN: writing and reading records. */
 
     // Write a plain text record to the in-memory DWN.
-    let response = await Web5.records.write(myDid.id, {
+    let response = await web5.dwn.records.write(myDid.id, {
       author: myDid.id,
       data: 'Hello, world!',
       message: {
@@ -64,7 +63,7 @@
     console.log('WRITE RESPONSE:', response.status);
 
     // Query for the record that was just created.
-    response = await Web5.records.query(myDid.id, {
+    response = await web5.dwn.records.query(myDid.id, {
       author: myDid.id,
       message: {
         filter: {
@@ -76,7 +75,7 @@
     console.log('RESPONSE DATA:', base64UrlToString(response.entries[0].encodedData));
 
     // Write a JSON record to the in-memory DWN.
-    response = await Web5.records.write(myDid.id, {
+    response = await web5.dwn.records.write(myDid.id, {
       author: myDid.id,
       data: { random: 'stuff' },
       message: {
@@ -87,7 +86,7 @@
     console.log('WRITE RESPONSE:', response.status);
 
     // Query for the record that was just created.
-    response = await Web5.records.query(myDid.id, {
+    response = await web5.dwn.records.query(myDid.id, {
       author: myDid.id,
       message: {
         filter: {
