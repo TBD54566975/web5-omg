@@ -1,8 +1,17 @@
-# ChatCPT powered web5 app maker
+# Experience web5 with just the web
 
-WIP WIP WIP WIP WIP WIP WIP
+OMG web5. Powered by ChatGPT. 
 
-OMG web5.
+## Pre made examples: 
+
+Try it out in the codesandbox: 
+
+[Todo App](https://codesandbox.io/s/github/TBD54566975/web5-omg/tree/main/generated-examples/todo)
+[Seasons App](https://codesandbox.io/s/github/TBD54566975/web5-omg/tree/main/generated-examples/seasons)
+
+
+
+## Development (with ChatGPT)
 
 to run:
 
