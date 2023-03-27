@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Personal Info</title>
+    <link
+      href="https://cdn.jsdelivr.net/gh/TBD54566975/web5-omg@main/styles.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <form action="#" onsubmit="return false;">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" required /><br /><br />
+      <label for="birthday">Birthday:</label>
+      <input type="date" id="birthday" name="birthday" required /><br /><br />
+      <label for="season">Favourite season:</label>
+      <select id="season" name="season" required>
+        <option value="">- PLEASE CHOOSE -</option>
+        <option value="Spring">Spring</option>
+        <option value="Summer">Summer</option>
+        <option value="Autumn">Autumn</option>
+        <option value="Winter">Winter</option>
+      </select><br /><br />
+      <button id="submit-info">SAVE MY INFO</button>
+    </form>
+
+    <script type="module">
+      import {
+        Web5
+      } from "https://cdn.jsdelivr.net/npm/@tbd54566975/web5@0.3.1-unstable.e2dfe57-2023.3.23-19-07-37/dist/browser.mjs";
+
+      const web5 = new Web5();
+
+      /* boilerplate start - required for every web5 app */
+      let myDid;
+      if (localStorage.getItem("myDid")) {
+        myDid = JSON.parse(localStorage.getItem("myDid"));
+        console.log("Loading previous did from localStorage");
+      } else {
+        console.log("Creating new did and storing in local storage");
+        myDid = await web5.did.create("ion", {
+          services: [{
+            id: "dwn",
+            type: "DecentralizedWebNode",
+            serviceEndpoint: {
+              nodes: [],
+            },
+          }, ],
+        });
+        localStorage.setItem("myDid", JSON.stringify(myDid));
+      }
+
+      web5.did.register({
+        connected: true,
+        did: myDid.id,
+        endpoint: "app://dwn",
+        keys: myDid.keys[0].keypair,
+      });
+
+      function base64UrlToString(encodedData) {
+        return web5.dwn.SDK.Encoder.bytesToString(
+          web5.dwn.SDK.Encoder.base64UrlToBytes(encodedData)
+        );
+      }
+      function base64UrlToObject(encodedData) {
+        return web5.dwn.SDK.Encoder.base64UrlToObject(encodedData);
+      }
+      /* boilerplate end */
+
+      /* Below are examples of operations with the DWN: writing and reading records. */
+
+      async function storePersonalInfo() {
+        const name = document.getElementById("name").value;
+        const birthday = document.getElementById("birthday").value;
+        const season = document.getElementById("season").value;
+        const myDidID = myDid.id;
+        const record = {
+          author: myDidID,
+          data: {
+            name,
+            birthday,
+            season,
+          },
+          message: {
+            schema: "personal-info",
+            dataFormat: "application/json",
+          },
+        };
+
+        let response = await web5.dwn.records.write(myDidID, record);
+        console.log("WRITE RESPONSE:", response.status);
+
+        response = await web5.dwn.records.query(myDidID, {
+          author: myDidID,
+          message: {
+            filter: {
+              schema: "personal-info",
+            },
+          },
+        });
+
+        const lastRecord = response.entries[response.entries.length - 1].encodedData;
+        const obj = base64UrlToObject(lastRecord);
+
+        alert(`Name: ${obj.name}\nBirthday: ${obj.birthday}\nSeason: ${obj.season}`);
+      }
+
+      document.getElementById("submit-info").addEventListener("click", storePersonalInfo);
+    </script>
+  </body>
+</html>
