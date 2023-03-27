@@ -10,7 +10,7 @@ Try it out in the codesandbox:
 * [Seasons App](https://codesandbox.io/s/github/TBD54566975/web5-omg/tree/main/generated-examples/seasons)
 
 
-## Development (with ChatGPT)
+## Development of custom examples
 
 to run:
 
