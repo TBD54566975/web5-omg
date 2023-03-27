@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TODO List | Web5.js App</title>
+    <link href="https://cdn.jsdelivr.net/gh/TBD54566975/web5-omg@main/styles.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <h1>TODO List</h1>
+    <ul id="todo-list">
+    </ul>
+    <form id="todo-form">
+      <input type="text" id="todo-input" placeholder="Enter a new todo">
+      <button type="submit" id="add-todo-btn">Add Todo</button>
+    </form>
+    <script type="module">
+      import { Web5 } from 'https://cdn.jsdelivr.net/npm/@tbd54566975/web5@0.3.1-unstable.e2dfe57-2023.3.23-19-07-37/dist/browser.mjs';
+      const web5 = new Web5();
+
+      /* boilerplate start - required for every web5 app */    
+      let myDid;    
+      if (localStorage.getItem('myDid')) {
+        myDid = JSON.parse(localStorage.getItem('myDid'));
+        console.log("Loading previous did from localStorage");
+      } else {
+        console.log("Creating new did and storing in local storage");
+        myDid = await web5.did.create('ion', {
+          services: [{
+            'id': 'dwn',
+            'type': 'DecentralizedWebNode',
+            'serviceEndpoint': {
+              'nodes': []
+            }
+          }]
+        });        
+        localStorage.setItem('myDid', JSON.stringify(myDid));
+      }
+
+      web5.did.register({
+        connected: true,
+        did: myDid.id,
+        endpoint: 'app://dwn',
+        keys: myDid.keys[0].keypair
+      });
+      function base64UrlToString(encodedData) {
+        return web5.dwn.SDK.Encoder.bytesToString(web5.dwn.SDK.Encoder.base64UrlToBytes(encodedData));
+      }
+      function base64UrlToObject(encodedData) {
+        return web5.dwn.SDK.Encoder.base64UrlToObject(encodedData);
+      }
+      /* boilerplate end */
+
+      const todoList = document.getElementById('todo-list');
+      const todoForm = document.getElementById('todo-form');
+      const todoInput = document.getElementById('todo-input');
+
+      // Load todos on page load
+      window.addEventListener('load', loadTodos);
+
+      async function loadTodos() {
+        todoList.innerHTML = '';
+        const response = await web5.dwn.records.query(myDid.id, {
+          author: myDid.id,
+          message: {
+            filter: {
+              schema: 'todo'
+            }
+          }
+        });
+        response.entries.forEach(entry => {
+          const todo = base64UrlToObject(entry.encodedData);
+          const todoLi = document.createElement('li');
+          todoLi.textContent = todo.text;
+          if (todo.completed) {
+            todoLi.classList.add('completed');
+          }
+          todoList.appendChild(todoLi);
+        });
+      }
+
+      todoForm.addEventListener('submit', async event => {
+        event.preventDefault();
+        const todoText = todoInput.value.trim();
+        if (!todoText) {
+          return;
+        }
+        const todoData = {
+          text: todoText,
+          completed: false
+        };
+        await web5.dwn.records.write(myDid.id, {
+          author: myDid.id,
+          data: todoData,
+          message: {
+            schema: 'todo',
+            dataFormat: 'application/json'
+          }
+        });
+        loadTodos();
+        todoInput.value = '';
+      });
+
+    </script>
+  </body>
+</html>

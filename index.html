@@ -35,6 +35,7 @@
         padding: 20px;
         box-sizing: border-box;
         overflow: auto;
+        display: none;
       }
       
       .output {
@@ -74,12 +75,19 @@
       </div>
     </div>
     <div class="editor-wrapper">
-      <textarea class="editor" placeholder="Add your instructions of how to modify the app here. Top right is editable source. Top left is your web5 app"></textarea>
+      <textarea class="editor" placeholder="Add your instructions of how to build or modify app here and press return. Press show/hide to see source code. eg: 'build an app that shows a list of todo items'"></textarea>
     </div>
+    <button id="toggle-output">Click here to Show/Hide generated web5 source code</button>
     <script>
       const editor = document.querySelector('.editor');
       const preview = document.querySelector('.preview');
       const output = document.querySelector('.output');
+      const outputWrapper = document.querySelector('.output-wrapper');
+      const toggleOutputBtn = document.getElementById('toggle-output');
+
+      toggleOutputBtn.addEventListener('click', () => {
+        outputWrapper.style.display = outputWrapper.style.display === 'none' ? 'block' : 'none';
+      });
 
       // add an event listener on editor for when the user presses enter
       editor.addEventListener('keydown', (e) => {
@@ -110,14 +118,11 @@
 
         }});
 
-
       output.addEventListener('input', () => {
         preview.contentDocument.open();
         preview.contentDocument.write(output.value);
-        preview.contentDocument.close();        
+        preview.contentDocument.close();
       });
-
-      output.value = "<b>yeah";
 
       // load the initial value from /app
       fetch('/app')
@@ -129,7 +134,8 @@
           preview.contentDocument.close();        
         });  
 
+</script>
 
-    </script>
-  </body>
+</body>
 </html>
+
