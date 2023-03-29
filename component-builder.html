@@ -74,9 +74,15 @@
 2. I want to store information about movies
 "></textarea>
         <div id="chosen-schema"></div>
+
+        <h2>Saving and Querying schema data with web5:</h2>
+        <pre class="language-javascript"><code class="language-javascript" id="web5-code">...</code></pre>
+
+
         <h2>A web component to render this schema:</h2>
-        
-        <pre class="language-javascript"><code class="language-javascript" id="web-component-code"></code></pre>
+
+
+        <pre class="language-javascript"><code class="language-javascript" id="web-component-code">...</code></pre>
 
          
     </div>
@@ -85,8 +91,28 @@
 
         const schema = document.getElementById('schema-description');
         const webComponentCode = document.getElementById('web-component-code');
+        const web5Code = document.getElementById('web5-code');
 
-        
+        const initialWeb5 = `    
+    // writing data
+    response = await web5.dwn.records.write(myDid.id, {
+        author: myDid.id,
+        data: myData,
+        message: {
+        schema: 'schema_here',
+        dataFormat: 'application/json'
+        }
+    });
+
+    // Query for the record that was just created.
+    response = await web5.dwn.records.query(myDid.id, {
+        author: myDid.id,
+        message: {
+        filter: {
+            schema: 'schema_here'
+        }
+        }
+    });`
 
         schema.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
@@ -108,6 +134,9 @@
             })
           }).then(response => response.text()).then(text => {
             document.getElementById('chosen-schema').innerText = "Using " + text;            
+            
+            web5Code.textContent = initialWeb5.replace('schema_here', text);
+            Prism.highlightAll();
 
             // set the inner text of webComponentCode to something
             webComponentCode.textContent = 'Generating web component... this may take some time...';
