@@ -135,7 +135,7 @@
           }).then(response => response.text()).then(text => {
             document.getElementById('chosen-schema').innerText = "Using " + text;            
             
-            web5Code.textContent = initialWeb5.replace('schema_here', text);
+            web5Code.textContent = initialWeb5.replaceAll('schema_here', text);
             Prism.highlightAll();
 
             // set the inner text of webComponentCode to something
