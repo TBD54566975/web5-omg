@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jupyter Notebook Style</title>
+    <title>Web5 component builder</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css?family=Inconsolata:400,700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/prism.min.js"></script>
@@ -68,72 +68,72 @@
            |  `--'  | |  |  |  | |  |__| |       \    /\    /    |  |____ |  |_)  |  ___) | 
             \______/  |__|  |__|  \______|        \__/  \__/     |_______||______/  |____/  
         </pre>
-        <h2>Enter a schema or describe your data.</h2>
-        <textarea id="schema" rows="6" placeholder="example: 
+        <h2>Enter a schema or describe your data:</h2>
+        <textarea id="schema-description" rows="6" placeholder="example: 
 1. use Person schema https://schema.org/Person
 2. I want to store information about movies
 "></textarea>
-
+        <a id="chosen-schema"></a>
         <h2>A web component to render this schema:</h2>
-        <pre><code class="language-javascript">
-            class PersonElement extends HTMLElement {
-                constructor() {
-                  super();
-                  this.attachShadow({ mode: 'open' });
-                }
-              
-                connectedCallback() {
-                  const personData = {
-                    "@context": "https://schema.org",
-                    "@type": "Person",
-                    "name": "John Doe",
-                    "jobTitle": "Software Developer",
-                    "email": "johndoe@example.com",
-                    "telephone": "(123) 456-7890",
-                    "url": "https://example.com/johndoe",
-                    "address": {
-                      "@type": "PostalAddress",
-                      "streetAddress": "123 Main St",
-                      "addressLocality": "Anytown",
-                      "addressRegion": "CA",
-                      "postalCode": "12345",
-                      "addressCountry": "US"
-                    }
-                  };
-              
-                  const personTemplate = `
-                    <style>
-                      :host {
-                        display: block;
-                      }
-                      p {
-                        margin: 0.5rem;
-                      }
-                      span {
-                        font-weight: bold;
-                      }
-                    </style>
-                    <p><span>Name:</span> ${personData.name}</p>
-                    <p><span>Job Title:</span> ${personData.jobTitle}</p>
-                    <p><span>Email:</span> ${personData.email}</p>
-                    <p><span>Telephone:</span> ${personData.telephone}</p>
-                    <p><span>URL:</span> ${personData.url}</p>
-                    <p><span>Address:</span> ${personData.address.streetAddress}, ${personData.address.addressLocality}, ${personData.address.addressRegion} ${personData.address.postalCode}, ${personData.address.addressCountry}</p>
-                  `;
-                  
-                  this.shadowRoot.innerHTML = personTemplate;
-                }
-              }
-              
-              customElements.define('person-element', PersonElement);
-              
-                    </code></pre>
-                    
-            <h2>Web5 code to load and save the data:? </h2>
+        
+        <pre class="language-javascript"><code class="language-javascript" id="web-component-code"></code></pre>
+
+         
+    </div>
+
+    <script>
+
+        const schema = document.getElementById('schema-description');
+        const webComponentCode = document.getElementById('web-component-code');
 
         
 
-    </div>
+        schema.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          // prevent the default behavior of the enter key
+          e.preventDefault();
+
+
+
+          // show that the browser is busy
+          schema.style.cursor = 'wait';
+
+          fetch('/identify-best-fit-schema', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              schema_description: schema.value,              
+            })
+          }).then(response => response.text()).then(text => {
+            document.getElementById('chosen-schema').href = text;            
+            document.getElementById('chosen-schema').text = "Using " + text;            
+
+            // set the inner text of webComponentCode to something
+            webComponentCode.textContent = 'Generating web component... this may take some time...';
+
+
+            fetch("/generate-webcomponent", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    schema: text
+                })
+            }).then(response => response.text()).then(text => {
+                webComponentCode.textContent = text;
+                Prism.highlightAll();
+                // make cursor not busy
+                schema.style.cursor = 'auto';     
+
+            });
+
+        });
+
+        }});
+    </script>
     
 
 </body>
