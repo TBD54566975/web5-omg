@@ -5,31 +5,11 @@ const fs = require('fs');
 
 
 app.use(express.json())
-
 const appjs = fs.readFileSync('seed_app.html', 'utf8');
 
-
-app.get('/', (req, res) => {
-  // load index.html as a string, and serve it
-  const index = fs.readFileSync('index.html', 'utf8');
-  res.send(index);
-  
-});
-
-app.get('/component-builder', (req, res) => {
-  // load index.html as a string, and serve it
-  const index = fs.readFileSync('component-builder.html', 'utf8');
-  res.send(index);
-  
-});
-
-
-app.get("/app", (req, res) => {
-  // load seed.js as a string, and serve it. this is the starting point for the app that they will be editing.
-  res.send(appjs);
-});
-
-
+app.get('/', (_, res) => { res.send(fs.readFileSync('index.html', 'utf8'));  });
+app.get('/component-builder', (_, res) => {  res.send(fs.readFileSync('component-builder.html', 'utf8'));  });
+app.get("/app", (_, res) => { res.send(appjs); });
 
 app.post('/prompt', async (req, res) => {
   // read the body of the request - which is json
@@ -38,14 +18,15 @@ app.post('/prompt', async (req, res) => {
   res.send(result);
 });
 
-
 app.post("/generate-webcomponent", async (req, res) => {
-  const result = await generateData(req.body.prompt);
+  const result = await generateWebElement(req.body.schema);
   return res.send(result);
 });
 
-
-
+app.post("/identify-best-fit-schema", async (req, res) => {
+  const result = await identifyBestFitSchema(req.body.schema_description);
+  return res.send(result);
+});
 
 app.listen(port, async () => {
   console.log(`web5 maker app listening on port ${port}`)
@@ -171,20 +152,49 @@ async function identifyBestFitSchema(prompt) {
 }
 
 
-async function generateWebElement(prompt) {
-  console.log("processing prompt: " + prompt);
+async function generateWebElement(schema) {
   const { Configuration, OpenAIApi } = require("openai");
   const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
   });
 
-  const schema = await identifyBestFitSchema(prompt);
-
   let chat_messages = [
     {role: "system", "content": "You are a helpful assistant that build a web component for the given JSON schema."},              
-    {role: "user", content: "Build a web component that extends the HTMLElement class and renders a form for data of the given JSON schema. Return only the the code, avoid irrelevant commentary (use comments in code instead)." },
-    {role: "assistant", content: "ok. understood. What json schema would you like me to use?"},
+    {role: "user", content: "Based on https://html.spec.whatwg.org/multipage/custom-elements.html#custom-elements, write a web component that renders json that complies with a specified schema. Please only return just the code, including how to register and use it. Doesn't need to be a whole HTML page with it (and no styles are needed). Some schemas can be long, so it may be necessary to only show rendering a subset of the fields for brevity and speed." },
+    {role: "assistant", content: "ok. understood. If needed I will only show a subset of fields to not be too slow (and only show the code, no comments). Can you show me an example?"},
+    {role: "user", content: "JSON schema: https://schema.org/Person"},
+    {role: "assistant", content: `
+    class PersonComponent extends HTMLElement {
+      constructor() {
+        super();
+        this.attachShadow({ mode: 'open' });
+      }
+    
+      connectedCallback() {
+        this.render();
+      }
+    
+      render() {
+        const personData = JSON.parse(this.getAttribute('data'));
+        const name = personData.givenName || '';
+        const email = personData.email || '';
+        const telephone = personData.telephone || '';
+    
+        this.shadowRoot.innerHTML = \`
+          <div>
+            <h2>Given Name: \${givenName}</h2>
+            <p>Email: \${email}</p>
+            <p>Telephone: \${telephone}</p>
+          </div>
+        \`;
+      }
+    }
+    
+    customElements.define('person-component', PersonComponent);
+    `},
     {role: "user", content: "JSON schema: " + schema},
+
+
     ]
 
   const openai = new OpenAIApi(configuration);  
@@ -195,7 +205,9 @@ async function generateWebElement(prompt) {
   console.log(completion.data.choices[0].message);
   
   const result  = completion.data.choices[0].message['content'];
-  return result;
+  // strip any markdown nonsense
+  return result.replace(/`/g, '');
+  
   
   
 }
