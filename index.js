@@ -16,10 +16,19 @@ app.get('/', (req, res) => {
   
 });
 
+app.get('/component-builder', (req, res) => {
+  // load index.html as a string, and serve it
+  const index = fs.readFileSync('component-builder.html', 'utf8');
+  res.send(index);
+  
+});
+
+
 app.get("/app", (req, res) => {
   // load seed.js as a string, and serve it. this is the starting point for the app that they will be editing.
   res.send(appjs);
 });
+
 
 
 app.post('/prompt', async (req, res) => {
@@ -28,6 +37,14 @@ app.post('/prompt', async (req, res) => {
   const result = await processOpenai(body.prompt, body.context_html);  
   res.send(result);
 });
+
+
+app.post("/generate-webcomponent", async (req, res) => {
+  const result = await generateData(req.body.prompt);
+  return res.send(result);
+});
+
+
 
 
 app.listen(port, async () => {
@@ -120,4 +137,70 @@ async function processOpenai(prompt, context_html) {
   
 }
 
-//processOpenai("how are you today?", "<html><body><h1>hello world</h1></body></html>")
+
+
+
+
+async function identifyBestFitSchema(prompt) {
+  const { Configuration, OpenAIApi } = require("openai");
+  const configuration = new Configuration({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+
+  let chat_messages = [
+    {role: "system", "content": "You are a helpful assistant that will match try to match the data or description to a schema from schema.org."},              
+    {role: "user", content: "schema.org defines many json schemas. Try to match the following description to a schema from schema.org that fits, and return only the schema URL."},
+    {role: "assistant", content: "ok. understood. Can you provide an examples?"},
+    {role: "user", content: "Description: " + " I want to track a healh insurance plan"},
+    {role: "assistant", content: "https://schema.org/HealthInsurancePlan"},
+    {role: "user", content: "Description: " + prompt},
+    ]
+
+  const openai = new OpenAIApi(configuration);  
+  const completion = await openai.createChatCompletion({
+    model: "gpt-3.5-turbo",
+    messages: chat_messages,
+  });
+  console.log(completion.data.choices[0].message);
+  
+  const result  = completion.data.choices[0].message['content'];
+
+  return result;
+  
+  
+}
+
+
+async function generateWebElement(prompt) {
+  console.log("processing prompt: " + prompt);
+  const { Configuration, OpenAIApi } = require("openai");
+  const configuration = new Configuration({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+
+  const schema = await identifyBestFitSchema(prompt);
+
+  let chat_messages = [
+    {role: "system", "content": "You are a helpful assistant that build a web component for the given JSON schema."},              
+    {role: "user", content: "Build a web component that extends the HTMLElement class and renders a form for data of the given JSON schema. Return only the the code, avoid irrelevant commentary (use comments in code instead)." },
+    {role: "assistant", content: "ok. understood. What json schema would you like me to use?"},
+    {role: "user", content: "JSON schema: " + schema},
+    ]
+
+  const openai = new OpenAIApi(configuration);  
+  const completion = await openai.createChatCompletion({
+    model: "gpt-3.5-turbo",
+    messages: chat_messages,
+  });
+  console.log(completion.data.choices[0].message);
+  
+  const result  = completion.data.choices[0].message['content'];
+  return result;
+  
+  
+}
+
+//generateDataForSchema("https://schema.org/HealthInsurancePlan");
+//generateWebElement("I'm building an app for car models");
+
+

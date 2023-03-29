@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>HTML Editor</title>
+    <title>Web5 App maker</title>
     <style>
       body {
         display: flex;
@@ -63,6 +63,12 @@
         font-family: monospace;
         font-size: 16px;
       }
+
+      .docs {
+        font-family: monospace;
+        font-size: 16px;
+      }
+
     </style>
   </head>
   <body>
@@ -83,8 +89,22 @@ Example prompts:
 
 Press show/hide to see source code. 
 "></textarea>
+
     </div>
-    <button id="toggle-output">Click here to Show/Hide generated web5 source code</button>
+    
+    <div class="editor-wrapper">
+      <!-- checkbox to show/hide output -->
+      <div>
+      <input type="checkbox" id="toggle-output"></input>       
+      <label class="docs" for="toggle-output">Show/hide generated source code</label>
+      </div>
+      <p></p>
+      <h2 class="docs">Try some pre made apps:</h2>
+      <div><a class="docs" href="https://codesandbox.io/s/github/TBD54566975/web5-omg/tree/main/generated-examples/todo" target="_blank">Todo App</a></div>
+      <div><a class="docs" href="https://codesandbox.io/s/github/TBD54566975/web5-omg/tree/main/generated-examples/seasons" target="_blank">Seasons App</a></div>
+
+    </div>
+
     <script>
       const editor = document.querySelector('.editor');
       const preview = document.querySelector('.preview');
@@ -92,8 +112,13 @@ Press show/hide to see source code.
       const outputWrapper = document.querySelector('.output-wrapper');
       const toggleOutputBtn = document.getElementById('toggle-output');
 
-      toggleOutputBtn.addEventListener('click', () => {
-        outputWrapper.style.display = outputWrapper.style.display === 'none' ? 'block' : 'none';
+
+      toggleOutputBtn.addEventListener('change', (event) => {
+        if (event.target.checked) {
+          outputWrapper.style.display = 'block';
+        } else {
+          outputWrapper.style.display = 'none';
+        }        
       });
 
       // add an event listener on editor for when the user presses enter

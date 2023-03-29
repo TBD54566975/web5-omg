@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jupyter Notebook Style</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Inconsolata:400,700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/components/prism-javascript.min.js"></script>
+    <style>
+
+        
+        body {
+            font-family: 'Inconsolata', monospace;
+            background-color: #c9d0f9;
+            color: #ffffff;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 20px;
+        }
+        textarea, input {
+            width: 100%;
+            resize: vertical;
+            
+            border: none;
+            padding: 0px;
+            font-family: 'Inconsolata', monospace;
+            font-size: 16px;
+        }
+        h1, h2 {
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        button {
+            background-color: #333333;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            font-family: 'Inconsolata', monospace;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        button:hover {
+            background-color: #4caf50;
+        }
+        pre code {
+            width: 100%;
+            font-family: 'Inconsolata', monospace !important;
+        }
+
+        body,nav {
+            color: #0f23da
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">        
+        <pre>
+            ______   .___  ___.   _______    ____    __    ____  _______ .______    _____  
+            /  __  \  |   \/   |  /  _____|   \   \  /  \  /   / |   ____||   _  \  | ____| 
+           |  |  |  | |  \  /  | |  |  __      \   \/    \/   /  |  |__   |  |_)  | | |__   
+           |  |  |  | |  |\/|  | |  | |_ |      \            /   |   __|  |   _  <  |___ \  
+           |  `--'  | |  |  |  | |  |__| |       \    /\    /    |  |____ |  |_)  |  ___) | 
+            \______/  |__|  |__|  \______|        \__/  \__/     |_______||______/  |____/  
+        </pre>
+        <h2>Enter a schema or describe your data.</h2>
+        <textarea id="schema" rows="6" placeholder="example: 
+1. use Person schema https://schema.org/Person
+2. I want to store information about movies
+"></textarea>
+
+        <h2>A web component to render this schema:</h2>
+        <pre><code class="language-javascript">
+            class PersonElement extends HTMLElement {
+                constructor() {
+                  super();
+                  this.attachShadow({ mode: 'open' });
+                }
+              
+                connectedCallback() {
+                  const personData = {
+                    "@context": "https://schema.org",
+                    "@type": "Person",
+                    "name": "John Doe",
+                    "jobTitle": "Software Developer",
+                    "email": "johndoe@example.com",
+                    "telephone": "(123) 456-7890",
+                    "url": "https://example.com/johndoe",
+                    "address": {
+                      "@type": "PostalAddress",
+                      "streetAddress": "123 Main St",
+                      "addressLocality": "Anytown",
+                      "addressRegion": "CA",
+                      "postalCode": "12345",
+                      "addressCountry": "US"
+                    }
+                  };
+              
+                  const personTemplate = `
+                    <style>
+                      :host {
+                        display: block;
+                      }
+                      p {
+                        margin: 0.5rem;
+                      }
+                      span {
+                        font-weight: bold;
+                      }
+                    </style>
+                    <p><span>Name:</span> ${personData.name}</p>
+                    <p><span>Job Title:</span> ${personData.jobTitle}</p>
+                    <p><span>Email:</span> ${personData.email}</p>
+                    <p><span>Telephone:</span> ${personData.telephone}</p>
+                    <p><span>URL:</span> ${personData.url}</p>
+                    <p><span>Address:</span> ${personData.address.streetAddress}, ${personData.address.addressLocality}, ${personData.address.addressRegion} ${personData.address.postalCode}, ${personData.address.addressCountry}</p>
+                  `;
+                  
+                  this.shadowRoot.innerHTML = personTemplate;
+                }
+              }
+              
+              customElements.define('person-element', PersonElement);
+              
+                    </code></pre>
+                    
+            <h2>Web5 code to load and save the data:? </h2>
+
+        
+
+    </div>
+    
+
+</body>
+</html>
