@@ -73,7 +73,7 @@
 1. use Person schema https://schema.org/Person
 2. I want to store information about movies
 "></textarea>
-        <a id="chosen-schema"></a>
+        <div id="chosen-schema"></div>
         <h2>A web component to render this schema:</h2>
         
         <pre class="language-javascript"><code class="language-javascript" id="web-component-code"></code></pre>
@@ -107,8 +107,7 @@
               schema_description: schema.value,              
             })
           }).then(response => response.text()).then(text => {
-            document.getElementById('chosen-schema').href = text;            
-            document.getElementById('chosen-schema').text = "Using " + text;            
+            document.getElementById('chosen-schema').innerText = "Using " + text;            
 
             // set the inner text of webComponentCode to something
             webComponentCode.textContent = 'Generating web component... this may take some time...';
