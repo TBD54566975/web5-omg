@@ -32,6 +32,20 @@ app.listen(port, async () => {
   console.log(`web5 maker app listening on port ${port}`)
 })
 
+app.use(function(err,req,res,next){
+  console.log(err);
+  res.status(500).send('Something broke!');
+});
+
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error(`Unhandled promise rejection. Reason: ${reason}. Promise: ${JSON.stringify(promise)}`);
+});
+
+process.on('uncaughtException', err => {
+  console.error('Uncaught exception:', (err.stack || err));
+});
+
 
 async function processOpenai(prompt, context_html) {
   console.log("processing prompt: " + prompt);
