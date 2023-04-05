@@ -77,12 +77,12 @@
           author: myDid,
           message: {
             filter: {
-              schema: 'todo'
+              schema: 'todo',
             }
           }
         });
-        console.log("todo response", response);
-        response.entries.forEach(entry => {
+        let j = await response.json();
+        j.entries.forEach(entry => {
           const todo = base64UrlToObject(entry.encodedData);
           const todoLi = document.createElement('li');
           todoLi.textContent = todo.text;
