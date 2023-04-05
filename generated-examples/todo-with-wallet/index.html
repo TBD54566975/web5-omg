@@ -10,39 +10,53 @@
     <h1>TODO List</h1>
     <ul id="todo-list">
     </ul>
+
+
+    <button type="button" id="connect_button">DID Connect</button>
+    <div>
+      <span>Security Code: </span><strong id="security_code"></strong>
+    </div>
+  
+
     <form id="todo-form">
       <input type="text" id="todo-input" placeholder="Enter a new todo">
       <button type="submit" id="add-todo-btn">Add Todo</button>
     </form>
+
+    
+
     <script type="module">
+
+      /* boilerplate start - required for every web5 app */
       import { Web5 } from 'https://cdn.jsdelivr.net/npm/@tbd54566975/web5@0.4.0-unstable.e6470ce-2023.4.01-19-39-11/dist/browser.mjs';
+
       const web5 = new Web5();
+      let myDid = '';
 
-      /* boilerplate start - required for every web5 app */    
-      let myDid;    
-      if (localStorage.getItem('myDid')) {
-        myDid = JSON.parse(localStorage.getItem('myDid'));
-        console.log("Loading previous did from localStorage");
-      } else {
-        console.log("Creating new did and storing in local storage");
-        myDid = await web5.did.create('ion', {
-          services: [{
-            'id': 'dwn',
-            'type': 'DecentralizedWebNode',
-            'serviceEndpoint': {
-              'nodes': []
-            }
-          }]
-        });        
-        localStorage.setItem('myDid', JSON.stringify(myDid));
-      }
-
-      web5.did.register({
-        connected: true,
-        did: myDid.id,
-        endpoint: 'app://dwn',
-        keys: myDid.keys[0].keypair
+      web5.addEventListener('open', (event) => {
+        document.querySelector('#security_code').textContent = event.detail.pin;
       });
+      web5.addEventListener('connection', (event) => {
+        myDid = event.detail.did;
+        alert('Connection succeeded!');
+        loadTodos();
+
+        // Load todos on page load
+        window.addEventListener('load', loadTodos);
+
+      });
+      web5.addEventListener('close', (event) => {
+        alert('Connection was denied');
+      });
+      web5.addEventListener('error', (event) => {
+        console.error(event);
+      });
+
+      document.querySelector('#connect_button').addEventListener('click', async event => {
+        event.preventDefault();
+        web5.connect();
+      });
+
       function base64UrlToString(encodedData) {
         return web5.dwn.SDK.Encoder.bytesToString(web5.dwn.SDK.Encoder.base64UrlToBytes(encodedData));
       }
@@ -55,20 +69,20 @@
       const todoForm = document.getElementById('todo-form');
       const todoInput = document.getElementById('todo-input');
 
-      // Load todos on page load
-      window.addEventListener('load', loadTodos);
 
       async function loadTodos() {
+        console.log("loading dids for", myDid);
         todoList.innerHTML = '';
-        const response = await web5.dwn.records.query(myDid.id, {
-          author: myDid.id,
+        const response = await web5.dwn.records.query(myDid, {
+          author: myDid,
           message: {
             filter: {
-              schema: 'todo'
+              schema: 'todo',
             }
           }
         });
-        response.entries.forEach(entry => {
+        let j = await response.json();
+        j.entries.forEach(entry => {
           const todo = base64UrlToObject(entry.encodedData);
           const todoLi = document.createElement('li');
           todoLi.textContent = todo.text;
@@ -81,6 +95,7 @@
 
       todoForm.addEventListener('submit', async event => {
         event.preventDefault();
+        console.log(myDid);
         const todoText = todoInput.value.trim();
         if (!todoText) {
           return;
@@ -89,8 +104,8 @@
           text: todoText,
           completed: false
         };
-        await web5.dwn.records.write(myDid.id, {
-          author: myDid.id,
+        await web5.dwn.records.write(myDid, {
+          author: myDid,
           data: todoData,
           message: {
             schema: 'todo',
