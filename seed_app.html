@@ -51,31 +51,9 @@
 
     /* Below are examples of operations with the DWN: writing and reading records. */
 
-    // Write a plain text record to the in-memory DWN.
+
+    // Example: Write a JSON record to the in-memory DWN.
     let response = await web5.dwn.records.write(myDid.id, {
-      author: myDid.id,
-      data: 'Hello, world!',
-      message: {
-        schema: 'foo/bar',
-        dataFormat: 'text/plain'
-      }
-    });
-    console.log('WRITE RESPONSE:', response.status);
-
-    // Query for the record that was just created.
-    response = await web5.dwn.records.query(myDid.id, {
-      author: myDid.id,
-      message: {
-        filter: {
-          schema: 'foo/bar'
-        }
-      }
-    });
-    console.log('QUERY RESPONSE:', response.entries[0]);
-    console.log('RESPONSE DATA:', base64UrlToString(response.entries[0].encodedData));
-
-    // Write a JSON record to the in-memory DWN.
-    response = await web5.dwn.records.write(myDid.id, {
       author: myDid.id,
       data: { random: 'stuff' },
       message: {
@@ -85,7 +63,7 @@
     });
     console.log('WRITE RESPONSE:', response.status);
 
-    // Query for the record that was just created.
+    // Example: Query for the JSON that was just created.
     response = await web5.dwn.records.query(myDid.id, {
       author: myDid.id,
       message: {
@@ -95,7 +73,10 @@
       }
     });
     console.log('QUERY RESPONSE:', response.entries[0]);
-    console.log('RESPONSE DATA:', base64UrlToObject(response.entries[0].encodedData));
+
+    // this gets the response (actually the first entry in the response) as an object:
+    let responseObj = base64UrlToObject(response.entries[0].encodedData);
+    console.log('RESPONSE DATA:', responseObj);
 
   </script>
 </body>
