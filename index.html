@@ -23,7 +23,7 @@
       
       .preview-wrapper {
         flex: 1;
-        padding: 20px;
+        padding: 0px;
         box-sizing: border-box;
         overflow: auto;
       }
@@ -95,7 +95,35 @@
 
         .footer a:hover {
         text-decoration: underline;
-        }      
+        }     
+        
+        .activity-container {
+          width: 100%;
+          height: 30px;
+          background-color: #f3f3f3;
+          position: relative;
+          visibility: hidden;
+        }
+
+        .activity-bar {
+          height: 100%;
+          width: 20%;
+          position: absolute;
+          background: linear-gradient(90deg, #3498db, #9b59b6);
+          animation: activity-animation 2s linear infinite;
+        }
+
+        @keyframes activity-animation {
+          0% {
+            left: 0;
+          }
+          50% {
+            left: 80%;
+          }
+          100% {
+            left: 0;
+          }
+        }        
 
     </style>
   </head>
@@ -121,6 +149,11 @@ Once your app is available, you can modify the source or ask it to make changes.
 "></textarea>
 
     </div>
+
+    <div class="activity-container">
+      <div class="activity-bar"></div>
+    </div>      
+
     
     <div class="editor-wrapper">
       <!-- checkbox to show/hide output -->
@@ -167,6 +200,7 @@ Once your app is available, you can modify the source or ask it to make changes.
 
           // show that the browser is busy
           editor.style.cursor = 'wait';
+          document.querySelector('.activity-container').style.visibility = 'visible';
 
           fetch('/prompt', {
             method: 'POST',
@@ -183,7 +217,8 @@ Once your app is available, you can modify the source or ask it to make changes.
           preview.contentDocument.write(output.value);
           preview.contentDocument.close();     
           // make cursor not busy
-          editor.style.cursor = 'auto';     
+          editor.style.cursor = 'auto';  
+          document.querySelector('.activity-container').style.visibility = 'hidden';   
         });
 
         }});
