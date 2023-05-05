@@ -85,14 +85,12 @@ async function processOpenai(prompt, context_html) {
   });
   console.log(completion.data.choices[0].message);
   
-  console.log(completion);  
   const result  = completion.data.choices[0].message['content'];
 
   // get only the content that starts with <!DOCTYPE html> and ends with </html>
   const start = result.indexOf("<!DOCTYPE html>");
   const end = result.indexOf("</html>");
   const html = result.substring(start, end + "</html>".length);
-  console.log(html);
   return html;
   
   
