@@ -3,6 +3,9 @@ const app = express();
 const port = 3000;
 const fs = require('fs');
 
+if (!String(process.env.OPENAI_API_KEY).startsWith('sk-')) {
+  throw new Error("Invalid OpenAI API key, please check 'https://platform.openai.com/account/api-keys'");
+}
 
 app.use(express.json());
 const appjs = fs.readFileSync('seed_app.html', 'utf8');
