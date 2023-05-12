@@ -1,10 +1,10 @@
 # Experience web5 with just the web
 
-OMG web5. Powered by ChatGPT. 
+OMG web5. Powered by ChatGPT.
 
-## Pre made examples: 
+## Pre made examples:
 
-Try it out in the codesandbox: 
+Try it out in the codesandbox:
 
 * [Todo App](https://codesandbox.io/s/github/TBD54566975/web5-omg/tree/main/generated-examples/todo)
 * [Seasons App](https://codesandbox.io/s/github/TBD54566975/web5-omg/tree/main/generated-examples/seasons)
@@ -17,14 +17,14 @@ to run:
 ```
 export OPENAI_API_KEY={your key here}
 npm install
-node index.js
+npm run dev
 ```
 
-open localhost:3000.
+open https://localhost:3000.
 
 ## How it works
 
-There is a seed_app.html which contains a starting seed for a web5 app. 
+There is a seed_app.html which contains a starting seed for a web5 app.
 This is then modified iteratively by ChatGPT into the app you want.
 
 ## Example
