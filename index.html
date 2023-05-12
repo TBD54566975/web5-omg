@@ -8,7 +8,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
     <link rel="icon" href="https://www.tbd.website/images/tbd-fav-icon-main.png" />
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap" rel="stylesheet" />
 
     <style type="text/css" media="screen">
       * {
@@ -130,7 +130,7 @@
       }
 
       /** font styles **/
-       .bold {
+      .bold {
         font-weight: 700;
       }
 
@@ -173,7 +173,7 @@ Example prompts:
   'Write an app that stores my name, birthday and favourite season of the year (make it a dropdown)'
 
 Once your app is available, you can modify the source or ask it to make changes."></textarea>
-      <input id="generate" class="generateButton" type="button" value="Generate">
+      <input id="generate" class="generateButton" type="button" value="Generate" />
     </div>
 
     <div class="editor-wrapper">
@@ -212,7 +212,7 @@ Once your app is available, you can modify the source or ask it to make changes.
       const output = document.querySelector('.output');
       const outputWrapper = document.querySelector('.output-wrapper');
       const toggleOutputBtn = document.getElementById('toggle-output');
-      const generateBtn = document.getElementById("generate");
+      const generateBtn = document.getElementById('generate');
 
       toggleOutputBtn.addEventListener('change', event => {
         if (event.target.checked) {
