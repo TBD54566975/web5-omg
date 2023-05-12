@@ -1,0 +1,19 @@
+{
+  "singleQuote": true,
+  "bracketSameLine": true,
+  "htmlWhitespaceSensitivity": "ignore",
+  "trailingComma": "all",
+  "printWidth": 120,
+  "arrowParens": "avoid",
+  "overrides": [
+    {
+      "files": [
+        ".*",
+        "*.json"
+      ],
+      "options": {
+        "parser": "json"
+      }
+    }
+  ]
+}
