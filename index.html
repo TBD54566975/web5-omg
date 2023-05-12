@@ -224,6 +224,7 @@ Once your app is available, you can modify the source or ask it to make changes.
       const toggleOutputBtn = document.getElementById('toggle-output');
       const generateBtn = document.getElementById('generate');
 
+      toggleOutputBtn.checked = false;
       toggleOutputBtn.addEventListener('change', event => {
         if (event.target.checked) {
           outputWrapper.style.display = 'flex';
