@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Web5 App maker</title>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
     <link rel="icon" href="https://www.tbd.website/images/tbd-fav-icon-main.png" />
-    
+
     <style>
       body {
         display: flex;
@@ -14,26 +16,26 @@
         height: 100vh;
         margin: 0;
       }
-      
+
       .main-wrapper {
         flex: 1;
         display: flex;
         overflow: hidden;
       }
-      
+
       .preview-wrapper {
         flex: 1;
         padding: 0px;
         box-sizing: border-box;
         overflow: auto;
       }
-      
+
       .preview {
         width: 100%;
         height: 100%;
         border: none;
       }
-      
+
       .output-wrapper {
         flex: 1;
         padding: 20px;
@@ -41,7 +43,7 @@
         overflow: auto;
         display: none;
       }
-      
+
       .output {
         width: 100%;
         height: 100%;
@@ -50,7 +52,7 @@
         font-family: monospace;
         font-size: 16px;
       }
-      
+
       .editor-wrapper {
         height: 200px;
         border-top: 1px solid #ccc;
@@ -58,7 +60,7 @@
         box-sizing: border-box;
         overflow: auto;
       }
-      
+
       .editor {
         width: 100%;
         height: 100%;
@@ -85,50 +87,55 @@
         left: 0;
         right: 0;
         border-top: 1px solid #dee2e6;
-        }
+      }
 
-        .footer a {
+      .footer a {
         color: #6c757d;
         text-decoration: none;
         margin: 0 10px;
-        }
+      }
 
-        .footer a:hover {
+      .footer a:hover {
         text-decoration: underline;
-        }     
-        
-        .activity-container {
-          width: 100%;
-          height: 30px;
-          background-color: #f3f3f3;
-          position: relative;
-          visibility: hidden;
+      }
+
+      .activity-container {
+        width: 100%;
+        height: 30px;
+        background-color: #f3f3f3;
+        position: relative;
+        visibility: hidden;
+      }
+
+      .activity-bar {
+        height: 100%;
+        width: 20%;
+        position: absolute;
+        background: linear-gradient(90deg, #3498db, #9b59b6);
+        animation: activity-animation 2s linear infinite;
+      }
+
+      @keyframes activity-animation {
+        0% {
+          left: 0;
         }
-
-        .activity-bar {
-          height: 100%;
-          width: 20%;
-          position: absolute;
-          background: linear-gradient(90deg, #3498db, #9b59b6);
-          animation: activity-animation 2s linear infinite;
+        50% {
+          left: 80%;
         }
-
-        @keyframes activity-animation {
-          0% {
-            left: 0;
-          }
-          50% {
-            left: 80%;
-          }
-          100% {
-            left: 0;
-          }
-        }        
-
+        100% {
+          left: 0;
+        }
+      }
     </style>
   </head>
   <body>
-    <a class="github-fork-ribbon" href="https://github.com/TBD54566975/web5-omg" data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
+    <a
+      class="github-fork-ribbon"
+      href="https://github.com/TBD54566975/web5-omg"
+      data-ribbon="Fork me on GitHub"
+      title="Fork me on GitHub">
+      Fork me on GitHub
+    </a>
     <div class="main-wrapper">
       <div class="preview-wrapper">
         <iframe class="preview"></iframe>
@@ -138,42 +145,51 @@
       </div>
     </div>
     <div class="editor-wrapper">
-      <textarea class="editor" placeholder="Add your instructions of how to build or modify app here and press return. ChatGPT will then attempt to build an app that meets your needs.
+      <textarea
+        class="editor"
+        placeholder="Add your instructions of how to build or modify app here and press return. ChatGPT will then attempt to build an app that meets your needs.
 
-Example prompts: 
+Example prompts:
   'build an app that shows a list of todo items'
   'Write an app that stores my name, birthday and favourite season of the year (make it a dropdown)'
 
 Once your app is available, you can modify the source or ask it to make changes.
 
 "></textarea>
-
     </div>
 
     <div class="activity-container">
       <div class="activity-bar"></div>
-    </div>      
+    </div>
 
-    
     <div class="editor-wrapper">
       <!-- checkbox to show/hide output -->
       <div>
-      <input type="checkbox" id="toggle-output"></input>       
-      <label class="docs" for="toggle-output">Show/hide generated source code</label>
+        <input type="checkbox" id="toggle-output" />
+        <label class="docs" for="toggle-output">Show/hide generated source code</label>
       </div>
     </div>
-      
-    <div class="footer"> 
-      
-    <div class="docs">Try some pre made apps:
-      <a class="docs" href="https://codesandbox.io/s/github/TBD54566975/web5-omg/tree/main/generated-examples/todo" target="_blank">🕸️⑤ Todo App 👈</a>
-      <a class="docs" href="https://codesandbox.io/s/github/TBD54566975/web5-omg/tree/main/generated-examples/seasons" target="_blank">🕸️⑤ Seasons App 👈</a>
-    </div>
 
-    <div class="docs">
-      <a href="/component-builder" target="_blank">👉 Show web⑤ component builder</a>
-    </div>
+    <div class="footer">
+      <div class="docs">
+        Try some pre made apps:
+        <a
+          class="docs"
+          href="https://codesandbox.io/s/github/TBD54566975/web5-omg/tree/main/generated-examples/todo"
+          target="_blank">
+          🕸️⑤ Todo App 👈
+        </a>
+        <a
+          class="docs"
+          href="https://codesandbox.io/s/github/TBD54566975/web5-omg/tree/main/generated-examples/seasons"
+          target="_blank">
+          🕸️⑤ Seasons App 👈
+        </a>
+      </div>
 
+      <div class="docs">
+        <a href="/component-builder" target="_blank">👉 Show web⑤ component builder</a>
+      </div>
     </div>
 
     <script>
@@ -183,17 +199,16 @@ Once your app is available, you can modify the source or ask it to make changes.
       const outputWrapper = document.querySelector('.output-wrapper');
       const toggleOutputBtn = document.getElementById('toggle-output');
 
-
-      toggleOutputBtn.addEventListener('change', (event) => {
+      toggleOutputBtn.addEventListener('change', event => {
         if (event.target.checked) {
           outputWrapper.style.display = 'block';
         } else {
           outputWrapper.style.display = 'none';
-        }        
+        }
       });
 
       // add an event listener on editor for when the user presses enter
-      editor.addEventListener('keydown', (e) => {
+      editor.addEventListener('keydown', e => {
         if (e.key === 'Enter') {
           // prevent the default behavior of the enter key
           e.preventDefault();
@@ -205,23 +220,25 @@ Once your app is available, you can modify the source or ask it to make changes.
           fetch('/prompt', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
             },
             body: JSON.stringify({
               prompt: editor.value,
-              context_html: output.value
-            })
-          }).then(response => response.text()).then(text => {
-          output.value = text;
-          preview.contentDocument.open();
-          preview.contentDocument.write(output.value);
-          preview.contentDocument.close();     
-          // make cursor not busy
-          editor.style.cursor = 'auto';  
-          document.querySelector('.activity-container').style.visibility = 'hidden';   
-        });
-
-        }});
+              context_html: output.value,
+            }),
+          })
+            .then(response => response.text())
+            .then(text => {
+              output.value = text;
+              preview.contentDocument.open();
+              preview.contentDocument.write(output.value);
+              preview.contentDocument.close();
+              // make cursor not busy
+              editor.style.cursor = 'auto';
+              document.querySelector('.activity-container').style.visibility = 'hidden';
+            });
+        }
+      });
 
       output.addEventListener('input', () => {
         preview.contentDocument.open();
@@ -236,11 +253,8 @@ Once your app is available, you can modify the source or ask it to make changes.
           output.value = text;
           preview.contentDocument.open();
           preview.contentDocument.write(output.value);
-          preview.contentDocument.close();        
-        });  
-
-</script>
-
-</body>
+          preview.contentDocument.close();
+        });
+    </script>
+  </body>
 </html>
-
